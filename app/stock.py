@@ -40,45 +40,58 @@ class StockData:
         try:
             self._rate_limit()  # Rate limiting
 
-            # Create Ticker with custom session (helps with rate limiting)
-            stock = yf.Ticker(ticker, session=self.session)
+            # Use download method instead of Ticker (more reliable)
+            # Get recent price data
+            hist = yf.download(ticker, period="5d", progress=False, session=self.session)
 
-            # Use history for price data (more reliable)
-            hist = stock.history(period="5d")
             if hist.empty:
+                print(f"No data found for {ticker}")
                 return None
 
             current_price = hist['Close'].iloc[-1]
             prev_close = hist['Close'].iloc[-2] if len(hist) > 1 else current_price
             change_percent = ((current_price - prev_close) / prev_close * 100) if prev_close else 0
 
-            # Get basic info (less likely to be rate limited)
+            # Try to get additional info (optional, may fail)
+            stock = yf.Ticker(ticker, session=self.session)
             try:
                 info = stock.info
                 name = info.get("longName", ticker)
                 sector = info.get("sector", "N/A")
                 industry = info.get("industry", "N/A")
-            except:
-                # If info fails, use minimal data
+                volume = info.get("volume", 0)
+                market_cap = info.get("marketCap", 0)
+                pe_ratio = info.get("trailingPE", None)
+                dividend_yield = info.get("dividendYield", None)
+                week_52_high = info.get("fiftyTwoWeekHigh", None)
+                week_52_low = info.get("fiftyTwoWeekLow", None)
+            except Exception as e:
+                # If info fails, use minimal data from history
+                print(f"Could not fetch detailed info for {ticker}, using basic data")
                 name = ticker
                 sector = "N/A"
                 industry = "N/A"
-                info = {}
+                volume = int(hist['Volume'].iloc[-1]) if 'Volume' in hist.columns else 0
+                market_cap = 0
+                pe_ratio = None
+                dividend_yield = None
+                week_52_high = float(hist['High'].max()) if 'High' in hist.columns else None
+                week_52_low = float(hist['Low'].min()) if 'Low' in hist.columns else None
 
             return {
                 "ticker": ticker,
                 "name": name,
-                "current_price": round(current_price, 2),
-                "previous_close": round(prev_close, 2),
-                "change_percent": round(change_percent, 2),
-                "volume": info.get("volume", 0),
-                "market_cap": info.get("marketCap", 0),
+                "current_price": round(float(current_price), 2),
+                "previous_close": round(float(prev_close), 2),
+                "change_percent": round(float(change_percent), 2),
+                "volume": volume,
+                "market_cap": market_cap,
                 "sector": sector,
                 "industry": industry,
-                "pe_ratio": info.get("trailingPE", None),
-                "dividend_yield": info.get("dividendYield", None),
-                "52_week_high": info.get("fiftyTwoWeekHigh", None),
-                "52_week_low": info.get("fiftyTwoWeekLow", None),
+                "pe_ratio": pe_ratio,
+                "dividend_yield": dividend_yield,
+                "52_week_high": week_52_high,
+                "52_week_low": week_52_low,
             }
 
         except Exception as e:
