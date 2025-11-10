@@ -15,18 +15,64 @@
         </header>
 
         <main>
-            <!-- Search Section -->
-            <section class="search-section">
-                <div class="search-box">
-                    <input
-                        type="text"
-                        id="tickerInput"
-                        placeholder="Enter ticker (e.g., AAPL, TSLA, GOOGL)"
-                        autocomplete="off"
-                    >
-                    <button id="analyzeBtn" onclick="analyzeStock()">Analyze</button>
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('stock')">📈 Stock Analysis</button>
+                <button class="tab-btn" onclick="switchTab('pdf')">📄 PDF Analysis</button>
+            </div>
+
+            <!-- Stock Analysis Tab -->
+            <section id="stockTab" class="tab-content">
+                <div class="search-section">
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            id="tickerInput"
+                            placeholder="Enter ticker (e.g., AAPL, TSLA, GOOGL)"
+                            autocomplete="off"
+                        >
+                        <button id="analyzeBtn" onclick="analyzeStock()">Analyze</button>
+                    </div>
+                    <div class="trending-chips" id="trendingChips"></div>
                 </div>
-                <div class="trending-chips" id="trendingChips"></div>
+            </section>
+
+            <!-- PDF Analysis Tab -->
+            <section id="pdfTab" class="tab-content hidden">
+                <div class="pdf-upload-section">
+                    <div class="upload-box">
+                        <input type="file" id="pdfFile" accept=".pdf" onchange="handleFileSelect(event)">
+                        <label for="pdfFile" class="upload-label">
+                            <span class="upload-icon">📄</span>
+                            <span id="fileName">Click to upload PDF or drag & drop</span>
+                            <span class="upload-hint">Max 10MB - Financial reports, earnings, news articles</span>
+                        </label>
+                    </div>
+
+                    <div class="analysis-options">
+                        <label>Analysis Type:</label>
+                        <select id="analysisType">
+                            <option value="summary">Summary</option>
+                            <option value="financial">Financial Analysis</option>
+                            <option value="sentiment">Sentiment Analysis</option>
+                        </select>
+                    </div>
+
+                    <div class="stock-context">
+                        <label>
+                            <input type="checkbox" id="useStockContext" onchange="toggleStockContext()">
+                            Analyze in context of specific stock
+                        </label>
+                        <input
+                            type="text"
+                            id="contextTicker"
+                            placeholder="Enter ticker (e.g., AAPL)"
+                            style="display: none;"
+                        >
+                    </div>
+
+                    <button id="analyzePdfBtn" onclick="analyzePDF()" disabled>Analyze PDF with AI</button>
+                </div>
             </section>
 
             <!-- Loading Indicator -->
@@ -60,12 +106,24 @@
                 </div>
             </section>
 
+            <!-- PDF Results Section -->
+            <section id="pdfResults" class="results hidden">
+                <div class="card pdf-analysis">
+                    <h3>📄 PDF Analysis Results</h3>
+                    <div class="pdf-meta">
+                        <span id="pdfFileName"></span>
+                        <span id="pdfPages"></span>
+                    </div>
+                    <div class="analysis-content" id="pdfAnalysisContent"></div>
+                </div>
+            </section>
+
             <!-- Error Message -->
             <div id="error" class="error hidden"></div>
         </main>
 
         <footer>
-            <p>Built with FastAPI + Llama 3.2 1B | Data from Yahoo Finance</p>
+            <p>Built with FastAPI + Llama 3.2 1B + Alpha Vantage | PDF Analysis Powered by AI</p>
         </footer>
     </div>
 

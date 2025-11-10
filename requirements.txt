@@ -8,6 +8,7 @@ ollama==0.1.6
 
 # Stock Market Data
 yfinance==0.2.36
+alpha-vantage==2.3.1
 
 # News & Web Scraping
 feedparser==6.0.11
@@ -17,3 +18,7 @@ beautifulsoup4==4.12.3
 # Utilities
 python-dotenv==1.0.0
 pydantic==2.5.3
+
+# PDF Processing
+PyPDF2==3.0.1
+python-magic==0.4.27
