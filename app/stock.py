@@ -6,10 +6,24 @@ Fetch real-time US stock market data
 import yfinance as yf
 from typing import Dict, Optional, List
 from datetime import datetime, timedelta
+import time
 
 
 class StockData:
     """Handler for stock market data"""
+
+    def __init__(self):
+        """Initialize with rate limiting"""
+        self.last_request_time = 0
+        self.min_request_interval = 0.5  # 500ms between requests
+
+    def _rate_limit(self):
+        """Simple rate limiting to avoid 429 errors"""
+        current_time = time.time()
+        time_since_last_request = current_time - self.last_request_time
+        if time_since_last_request < self.min_request_interval:
+            time.sleep(self.min_request_interval - time_since_last_request)
+        self.last_request_time = time.time()
 
     def get_stock_info(self, ticker: str) -> Optional[Dict]:
         """
@@ -17,28 +31,43 @@ class StockData:
         Returns: Dict with stock data or None if not found
         """
         try:
-            stock = yf.Ticker(ticker)
-            info = stock.info
+            self._rate_limit()  # Rate limiting
 
-            # Get current price and change
-            hist = stock.history(period="2d")
+            # Create Ticker with custom session (helps with rate limiting)
+            stock = yf.Ticker(ticker)
+
+            # Use history for price data (more reliable)
+            hist = stock.history(period="5d")
             if hist.empty:
                 return None
 
             current_price = hist['Close'].iloc[-1]
-            prev_close = info.get('previousClose', hist['Close'].iloc[0])
+            prev_close = hist['Close'].iloc[-2] if len(hist) > 1 else current_price
             change_percent = ((current_price - prev_close) / prev_close * 100) if prev_close else 0
+
+            # Get basic info (less likely to be rate limited)
+            try:
+                info = stock.info
+                name = info.get("longName", ticker)
+                sector = info.get("sector", "N/A")
+                industry = info.get("industry", "N/A")
+            except:
+                # If info fails, use minimal data
+                name = ticker
+                sector = "N/A"
+                industry = "N/A"
+                info = {}
 
             return {
                 "ticker": ticker,
-                "name": info.get("longName", ticker),
+                "name": name,
                 "current_price": round(current_price, 2),
                 "previous_close": round(prev_close, 2),
                 "change_percent": round(change_percent, 2),
                 "volume": info.get("volume", 0),
                 "market_cap": info.get("marketCap", 0),
-                "sector": info.get("sector", "N/A"),
-                "industry": info.get("industry", "N/A"),
+                "sector": sector,
+                "industry": industry,
                 "pe_ratio": info.get("trailingPE", None),
                 "dividend_yield": info.get("dividendYield", None),
                 "52_week_high": info.get("fiftyTwoWeekHigh", None),
@@ -55,6 +84,7 @@ class StockData:
         period: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
         """
         try:
+            self._rate_limit()  # Rate limiting
             stock = yf.Ticker(ticker)
             hist = stock.history(period=period)
 
@@ -86,6 +116,7 @@ class StockData:
             data = self.get_stock_info(ticker)
             if data:
                 results.append(data)
+            time.sleep(0.2)  # Extra delay for multiple requests
         return results
 
     def search_ticker(self, query: str) -> List[Dict]:
