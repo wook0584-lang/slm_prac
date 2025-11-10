@@ -66,37 +66,37 @@ class PDFAnalyzer:
             if len(text) > max_length:
                 text = text[:max_length] + "\n\n[... truncated ...]"
 
-            # Create analysis prompt based on type
+            # Create analysis prompt based on type (Korean)
             if analysis_type == "summary":
-                prompt = f"""Analyze this document and provide a concise summary (3-5 sentences):
+                prompt = f"""이 문서를 분석하고 간결한 요약을 제공해주세요 (3-5문장, 한국어로):
 
 {text}
 
-Summary:"""
+요약:"""
 
             elif analysis_type == "sentiment":
-                prompt = f"""Analyze the sentiment and tone of this document. Is it positive, negative, or neutral? Explain briefly.
+                prompt = f"""이 문서의 감성과 어조를 분석해주세요. 긍정적인지, 부정적인지, 중립적인지 간단히 설명해주세요 (한국어로).
 
 {text}
 
-Sentiment Analysis:"""
+감성 분석:"""
 
             elif analysis_type == "financial":
-                prompt = f"""This appears to be a financial document. Extract key insights:
-1. Main topics/companies mentioned
-2. Financial metrics or numbers
-3. Overall implications
+                prompt = f"""이것은 재무 문서로 보입니다. 다음 핵심 인사이트를 추출해주세요 (한국어로):
+1. 언급된 주요 주제/회사
+2. 재무 지표 또는 수치
+3. 전반적인 의미
 
 {text}
 
-Financial Analysis:"""
+재무 분석:"""
 
             else:  # custom
-                prompt = f"""Analyze this document and provide key insights:
+                prompt = f"""이 문서를 분석하고 핵심 인사이트를 제공해주세요 (한국어로):
 
 {text}
 
-Analysis:"""
+분석:"""
 
             # Generate analysis using LLM
             analysis = self.llm._generate(prompt, max_tokens=500)
@@ -133,23 +133,23 @@ Analysis:"""
             if len(text) > max_length:
                 text = text[:max_length] + "\n\n[... truncated ...]"
 
-            # Create comparison prompt
-            prompt = f"""Analyze this document in relation to {ticker} stock:
+            # Create comparison prompt (Korean)
+            prompt = f"""이 문서를 {ticker} 주식과 연관하여 분석해주세요 (한국어로):
 
-Stock Info:
-- Ticker: {ticker}
-- Current Price: ${stock_info.get('current_price', 'N/A')}
-- Change: {stock_info.get('change_percent', 'N/A')}%
+주식 정보:
+- 티커: {ticker}
+- 현재 가격: ${stock_info.get('current_price', 'N/A')}
+- 변동: {stock_info.get('change_percent', 'N/A')}%
 
-Document Content:
+문서 내용:
 {text}
 
-Provide:
-1. How does this document relate to {ticker}?
-2. Key takeaways for investors
-3. Potential impact on stock price (positive/negative/neutral)
+다음을 제공해주세요:
+1. 이 문서가 {ticker}와 어떻게 관련되어 있나요?
+2. 투자자를 위한 핵심 포인트
+3. 주가에 미칠 잠재적 영향 (긍정적/부정적/중립적)
 
-Analysis:"""
+분석:"""
 
             analysis = self.llm._generate(prompt, max_tokens=500)
 

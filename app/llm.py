@@ -56,32 +56,32 @@ class LlamaAnalyzer:
         change = stock_info.get("change_percent", "N/A")
         company = stock_info.get("name", ticker)
 
-        # Create prompt
-        prompt = f"""You are a financial analyst. Analyze this stock briefly.
+        # Create prompt (Korean)
+        prompt = f"""당신은 금융 분석가입니다. 이 주식을 간단히 분석해주세요.
 
-Ticker: {ticker}
-Company: {company}
-Current Price: ${price}
-Change: {change}%
+티커: {ticker}
+회사명: {company}
+현재 가격: ${price}
+변동: {change}%
 
-Recent News:
+최근 뉴스:
 {news_text}
 
-Provide:
-1. Brief analysis (2-3 sentences)
-2. Sentiment (Positive/Neutral/Negative)
+다음을 제공하세요:
+1. 간단한 분석 (2-3문장, 한국어로)
+2. 감성 분석 (Positive/Neutral/Negative)
 
-Keep it concise and factual."""
+간결하고 사실적으로 답변해주세요. 반드시 한국어로 작성하세요."""
 
         # Generate analysis
         response = self._generate(prompt, max_tokens=300)
 
-        # Extract sentiment
+        # Extract sentiment (support both English and Korean)
         sentiment = "Neutral"
         response_lower = response.lower()
-        if "positive" in response_lower or "bullish" in response_lower:
+        if any(word in response_lower for word in ["positive", "bullish", "긍정", "상승", "호재"]):
             sentiment = "Positive"
-        elif "negative" in response_lower or "bearish" in response_lower:
+        elif any(word in response_lower for word in ["negative", "bearish", "부정", "하락", "악재"]):
             sentiment = "Negative"
 
         return {
@@ -91,11 +91,11 @@ Keep it concise and factual."""
 
     def summarize_text(self, text: str) -> str:
         """Summarize news article or text"""
-        prompt = f"""Summarize this text in 2-3 sentences:
+        prompt = f"""다음 텍스트를 2-3문장으로 요약해주세요 (한국어로):
 
 {text[:1000]}
 
-Summary:"""
+요약:"""
 
         return self._generate(prompt, max_tokens=150)
 
@@ -123,10 +123,10 @@ Sentiment:"""
             for data in stock_data
         ])
 
-        prompt = f"""Compare these stocks briefly (1-2 sentences each):
+        prompt = f"""다음 주식들을 간단히 비교해주세요 (각 1-2문장씩, 한국어로):
 
 {comparison}
 
-Which looks better for investment? Keep it concise."""
+어느 것이 투자하기 더 좋아 보이나요? 간결하게 답변해주세요."""
 
         return self._generate(prompt, max_tokens=200)
