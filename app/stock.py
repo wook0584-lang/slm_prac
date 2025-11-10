@@ -7,15 +7,22 @@ import yfinance as yf
 from typing import Dict, Optional, List
 from datetime import datetime, timedelta
 import time
+import requests
 
 
 class StockData:
     """Handler for stock market data"""
 
     def __init__(self):
-        """Initialize with rate limiting"""
+        """Initialize with rate limiting and custom session"""
         self.last_request_time = 0
-        self.min_request_interval = 0.5  # 500ms between requests
+        self.min_request_interval = 1.0  # 1 second between requests (increased)
+
+        # Create custom session with User-Agent to avoid 429 errors
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        })
 
     def _rate_limit(self):
         """Simple rate limiting to avoid 429 errors"""
@@ -34,7 +41,7 @@ class StockData:
             self._rate_limit()  # Rate limiting
 
             # Create Ticker with custom session (helps with rate limiting)
-            stock = yf.Ticker(ticker)
+            stock = yf.Ticker(ticker, session=self.session)
 
             # Use history for price data (more reliable)
             hist = stock.history(period="5d")
@@ -85,7 +92,7 @@ class StockData:
         """
         try:
             self._rate_limit()  # Rate limiting
-            stock = yf.Ticker(ticker)
+            stock = yf.Ticker(ticker, session=self.session)
             hist = stock.history(period=period)
 
             if hist.empty:
