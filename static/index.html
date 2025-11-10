@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis - Llama 3.2 1B</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 AI Stock Analysis</h1>
+            <p class="subtitle">Powered by Llama 3.2 1B - Lightweight LLM</p>
+        </header>
+
+        <main>
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="tickerInput"
+                        placeholder="Enter ticker (e.g., AAPL, TSLA, GOOGL)"
+                        autocomplete="off"
+                    >
+                    <button id="analyzeBtn" onclick="analyzeStock()">Analyze</button>
+                </div>
+                <div class="trending-chips" id="trendingChips"></div>
+            </section>
+
+            <!-- Loading Indicator -->
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>AI is analyzing...</p>
+            </div>
+
+            <!-- Results Section -->
+            <section id="results" class="results hidden">
+                <!-- Stock Info Card -->
+                <div class="card stock-info">
+                    <h2 id="stockName">-</h2>
+                    <div class="price-container">
+                        <span class="price" id="stockPrice">$0.00</span>
+                        <span class="change" id="stockChange">0.00%</span>
+                    </div>
+                </div>
+
+                <!-- AI Analysis Card -->
+                <div class="card ai-analysis">
+                    <h3>🤖 AI Analysis</h3>
+                    <div class="sentiment-badge" id="sentimentBadge">Neutral</div>
+                    <p id="aiSummary" class="summary-text">-</p>
+                </div>
+
+                <!-- News Section -->
+                <div class="card news-section">
+                    <h3>📰 Recent News</h3>
+                    <div id="newsList" class="news-list"></div>
+                </div>
+            </section>
+
+            <!-- Error Message -->
+            <div id="error" class="error hidden"></div>
+        </main>
+
+        <footer>
+            <p>Built with FastAPI + Llama 3.2 1B | Data from Yahoo Finance</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

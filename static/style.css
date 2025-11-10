@@ -1,0 +1,288 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Search Section */
+.search-section {
+    margin-bottom: 30px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#tickerInput {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    text-transform: uppercase;
+}
+
+#analyzeBtn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#analyzeBtn:hover {
+    background: #45a049;
+}
+
+#analyzeBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Trending Chips */
+.trending-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.chip {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.chip:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Loading */
+.loading {
+    text-align: center;
+    color: white;
+    padding: 40px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 20px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Stock Info */
+.stock-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.change {
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.change.positive {
+    color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.change.negative {
+    color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* AI Analysis */
+.ai-analysis h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+.sentiment-badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.sentiment-badge.Positive {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.sentiment-badge.Negative {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.sentiment-badge.Neutral {
+    background: rgba(158, 158, 158, 0.2);
+    color: #666;
+}
+
+.summary-text {
+    line-height: 1.8;
+    color: #555;
+    white-space: pre-wrap;
+}
+
+/* News Section */
+.news-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: #667eea;
+}
+
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.news-item {
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+
+.news-item:hover {
+    background: #f0f0f0;
+    transform: translateX(5px);
+}
+
+.news-item a {
+    text-decoration: none;
+    color: #333;
+}
+
+.news-title {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #667eea;
+}
+
+.news-meta {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.news-source {
+    color: #667eea;
+    font-weight: 500;
+}
+
+/* Error */
+.error {
+    background: #f44336;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    color: white;
+    opacity: 0.8;
+    margin-top: 40px;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .price {
+        font-size: 2rem;
+    }
+}
